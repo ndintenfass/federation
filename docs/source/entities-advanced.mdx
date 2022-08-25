@@ -491,15 +491,15 @@ graph TB;
 
 If you aren't sure whether your subgraph can always resolve a field, see [Using `@provides`](#using-provides) for an example of a subgraph that _can't_.
 
-### Ensure resolver consistency
+### Understanding resolver consistency
 
-If multiple subgraphs can resolve a field, **make sure each subgraph's resolver for that field behaves identically.** Otherwise, queries might return inconsistent results to clients depending on which subgraph resolves the field.
+If multiple subgraphs can resolve a field, queries may return that field from any of those subgraphs, depending on the query plan for a given shape of query. If those different subgraphs behave differently when resolving that field, your clients could end up with inconsistent results across different operations for that field.
 
-This is especially important to keep in mind when making changes to an _existing_ resolver. If you don't make the resolver changes to each subgraph simultaneously, clients might observe inconsistent results.
+This potential inconsistency is especially important to keep in mind when making changes to an _existing_ resolver. Until the resolvers on all possible subgraphs that return that field are aligned, clients could observe inconsistent results.
 
-Common inconsistent resolver behaviors to look out for include:
+The two most common inconsistent behaviors to avoid for across subgraphs are:
 
-* Returning a different default value
+* Returning a different default value for the same field
 * Throwing different errors in the same scenario
 
 ### Using `@shareable`
